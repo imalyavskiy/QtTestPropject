@@ -39,13 +39,32 @@
 #include <QIcon>
 #include <QVector>
 
+class CInterviewRow
+{
+public:
+	CInterviewRow(const int items = 0, CInterviewRow *parent = nullptr);
+	
+	~CInterviewRow();
+
+	bool operator ==(const CInterviewRow& other) const;
+
+//protected:
+	CInterviewRow *parent;
+	QVector<QString> m_itemsInTheRow;
+};
+
+
 class CInterviewModel : public QAbstractItemModel
 {
     Q_OBJECT
+protected:
+	CInterviewModel(const int rows, const int columns, QObject *parent = 0);
 
 public:
-    CInterviewModel(int rows, int columns, QObject *parent = 0);
-    ~CInterviewModel();
+	static CInterviewModel* createInstance(const int rows, const int columns, QObject *parent);
+	~CInterviewModel();
+
+	void setData();
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const Q_DECL_OVERRIDE;
     QModelIndex parent(const QModelIndex &child) const Q_DECL_OVERRIDE;
@@ -60,23 +79,12 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
 private:
+    CInterviewRow *parent(CInterviewRow *child) const;
+    int row(const CInterviewRow *node) const;
 
-    struct Node
-    {
-        Node(Node *parent = 0) : parent(parent), children(0) {}
-        ~Node() { delete children; }
-        Node *parent;
-        QVector<Node> *children;
-    };
-
-    Node *node(int row, Node *parent) const;
-    Node *parent(Node *child) const;
-    int row(Node *node) const;
-
-    QIcon services;
-    int rc;
-    int cc;
-    QVector<Node> *tree;
+    int m_numberOfRows;
+    int m_numberOfColumns;
+    QVector<CInterviewRow> m_tree;
     QFileIconProvider iconProvider;
 };
 

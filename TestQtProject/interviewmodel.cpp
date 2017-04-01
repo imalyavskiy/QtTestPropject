@@ -36,105 +36,166 @@
 #include <QIcon>
 #include <QPixmap>
 
-CInterviewModel::CInterviewModel(int rows, int columns, QObject *parent)
-    : QAbstractItemModel(parent),
-      services(QPixmap(":/images/services.png")),
-      rc(rows), cc(columns),
-      tree(new QVector<Node>(rows, Node(0)))
-{
 
+//////////////////////////////////////////////////////////////////////////
+// CInterviewItem
+//////////////////////////////////////////////////////////////////////////
+CInterviewRow::CInterviewRow(const int items, CInterviewRow *parent)
+	: parent(parent)
+	, m_itemsInTheRow(items, QString())
+{
+	;
+}
+
+CInterviewRow::~CInterviewRow()
+{
+}
+
+bool 
+CInterviewRow::operator ==(const CInterviewRow& other) const
+{
+	return (this == &other);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// CInterviewModel
+//////////////////////////////////////////////////////////////////////////
+CInterviewModel::CInterviewModel(const int rows, const int columns, QObject *parent)
+    : QAbstractItemModel(parent)
+	, m_numberOfRows(rows)
+	, m_numberOfColumns(columns)
+	, m_tree(rows, CInterviewRow(columns))
+{
+	for (int cRow = 0; cRow < rows; ++cRow)
+	{
+		for (int cCol = 0; cCol < columns; ++cCol)
+		{
+			QString& str = m_tree[cRow].m_itemsInTheRow[cCol];
+			str.clear();
+			str = QString::number(cRow) + QString(":") + QString::number(cCol);
+		}
+	}
+}
+
+CInterviewModel* 
+CInterviewModel::createInstance(const int rows, const int columns, QObject *parent)
+{
+	CInterviewModel* model = new CInterviewModel(rows, columns, parent);
+	if (model)
+		model->setData();
+
+	return model;
 }
 
 CInterviewModel::~CInterviewModel()
 {
-    delete tree;
 }
 
-QModelIndex CInterviewModel::index(int row, int column, const QModelIndex &parent) const
+void 
+CInterviewModel::setData()
 {
-    if (row < rc && row >= 0 && column < cc && column >= 0) {
-        Node *parentNode = static_cast<Node*>(parent.internalPointer());
-        Node *childNode = node(row, parentNode);
-        if (childNode)
-            return createIndex(row, column, childNode);
+	for (int cRow = 0; cRow < m_numberOfRows; ++cRow)
+	{
+		for (int cCol = 0; cCol < m_numberOfColumns; ++cCol)
+		{
+			QString& str = m_tree[cRow].m_itemsInTheRow[cCol];
+			str.clear();
+			str = QString::number(cRow) + QString(":") + QString::number(cCol);
+		}
+	}
+}
+
+QModelIndex 
+CInterviewModel::index(int row, int column, const QModelIndex &parent) const
+{
+	if (parent.isValid())
+		return QModelIndex();
+
+    if (row < m_numberOfRows && row >= 0 && column < m_numberOfColumns && column >= 0) 
+	{
+        CInterviewRow* parentItem = static_cast<CInterviewRow*>(parent.internalPointer());
+        CInterviewRow* item = (row < m_tree.size()) 
+			? const_cast<CInterviewRow*>(&m_tree[row]) // хак
+			: nullptr;
+
+        if (item)
+            return createIndex(row, column, item);
     }
     return QModelIndex();
 }
 
-QModelIndex CInterviewModel::parent(const QModelIndex &child) const
+QModelIndex 
+CInterviewModel::parent(const QModelIndex &child) const
 {
     if (child.isValid()) {
-        Node *childNode = static_cast<Node*>(child.internalPointer());
-        Node *parentNode = parent(childNode);
-        if (parentNode)
-            return createIndex(row(parentNode), 0, parentNode);
+        CInterviewRow *item = static_cast<CInterviewRow*>(child.internalPointer());
+        CInterviewRow *parentItem = parent(item);
+        if (parentItem)
+            return createIndex(row(parentItem), 0, parentItem);
     }
     return QModelIndex();
 }
 
-int CInterviewModel::rowCount(const QModelIndex &parent) const
+int 
+CInterviewModel::rowCount(const QModelIndex &parent) const
 {
-    return (parent.isValid() && parent.column() != 0) ? 0 : rc;
+    return (parent.isValid() && parent.column() != 0) ? 0 : m_numberOfRows;
 }
 
-int CInterviewModel::columnCount(const QModelIndex &parent) const
+int 
+CInterviewModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return cc;
+    return m_numberOfColumns;
 }
 
-QVariant CInterviewModel::data(const QModelIndex &index, int role) const
+QVariant 
+CInterviewModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
+    if (!index.isValid() || index.row() >= m_numberOfRows || index.column() >= m_numberOfColumns)
         return QVariant();
-    if (role == Qt::DisplayRole)
-        return QVariant("Item " + QString::number(index.row()) + ':' + QString::number(index.column()));
-    if (role == Qt::DecorationRole) {
-        if (index.column() == 0)
-            return iconProvider.icon(QFileIconProvider::Folder);
-        return iconProvider.icon(QFileIconProvider::File);
-    }
+
+	if (role == Qt::DisplayRole)
+		return QVariant(m_tree[index.row()].m_itemsInTheRow[index.column()]);
+
     return QVariant();
 }
 
-QVariant CInterviewModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant 
+CInterviewModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (role == Qt::DisplayRole)
         return QString::number(section);
-    if (role == Qt::DecorationRole)
-        return QVariant::fromValue(services);
     return QAbstractItemModel::headerData(section, orientation, role);
 }
 
-bool CInterviewModel::hasChildren(const QModelIndex &parent) const
+bool 
+CInterviewModel::hasChildren(const QModelIndex &parent) const
 {
     if (parent.isValid() && parent.column() != 0)
         return false;
-    return rc > 0 && cc > 0;
+    return m_numberOfRows > 0 && m_numberOfColumns > 0;
 }
 
-Qt::ItemFlags CInterviewModel::flags(const QModelIndex &index) const
+Qt::ItemFlags 
+CInterviewModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid())
-        return 0;
-    return Qt::ItemIsDragEnabled|QAbstractItemModel::flags(index);
+	if (!index.isValid())
+		return 0;
+	return Qt::ItemIsDragEnabled|QAbstractItemModel::flags(index);
 }
 
-CInterviewModel::Node *CInterviewModel::node(int row, Node *parent) const
-{
-    if (parent && !parent->children)
-        parent->children = new QVector<Node>(rc, Node(parent));
-    QVector<Node> *v = parent ? parent->children : tree;
-    return const_cast<Node*>(&(v->at(row)));
-}
-
-CInterviewModel::Node *CInterviewModel::parent(Node *child) const
+CInterviewRow *
+CInterviewModel::parent(CInterviewRow *child) const
 {
     return child ? child->parent : 0;
 }
 
-int CInterviewModel::row(Node *node) const
+int 
+CInterviewModel::row(const CInterviewRow *node) const
 {
-    const Node *first = node->parent ? &(node->parent->children->at(0)) : &(tree->at(0));
-    return node - first;
+	if (!node)
+		return -1;
+
+	return m_tree.indexOf(*node); // линейный проход от начала
 }
