@@ -16,8 +16,14 @@
     <Filter Include="Forms">
       <UniqueIdentifier>{7274123f-83e9-463b-988d-9f99a675a89d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="moc">
+    <Filter Include="Generated">
+      <UniqueIdentifier>{afa32c92-effc-496d-a56f-09d52c6ab9cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated\moc">
       <UniqueIdentifier>{716edfd0-6803-4ffc-9fee-e16bb0db36c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated\uic">
+      <UniqueIdentifier>{4b9762b6-f9cb-49c3-875f-4ed08738ea0c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -28,7 +34,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_mainwindow.cpp">
-      <Filter>moc</Filter>
+      <Filter>Generated\moc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -38,5 +44,10 @@
     <CustomBuild Include="mainwindow.ui">
       <Filter>Forms</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
+      <Filter>Generated\uic</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
