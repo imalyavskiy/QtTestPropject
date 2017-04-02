@@ -7,12 +7,6 @@ class CTableView
 	: public QTableView
 {
 	Q_OBJECT;
-public:
-	CTableView();
-	~CTableView();
-
-	void mousePressEvent(QMouseEvent *event);
-	void mouseDoubleClickEvent(QMouseEvent *event);
 
 protected:
 	void keyReleaseEvent(QKeyEvent* event) Q_DECL_OVERRIDE;

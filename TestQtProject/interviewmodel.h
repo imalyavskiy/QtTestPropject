@@ -64,7 +64,6 @@ protected:
 
 public:
 	static CDataTableModel* createInstance(const int rows, const int columns, QObject *parent);
-	~CDataTableModel();
 
 	void initData(const int rows, const int columns);
 

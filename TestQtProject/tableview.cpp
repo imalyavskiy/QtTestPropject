@@ -2,26 +2,6 @@
 #include <QMouseEvent>
 #include <iostream>
 
-CTableView::CTableView()
-{
-	;
-}
-
-CTableView::~CTableView()
-{
-	;
-}
-
-void CTableView::mousePressEvent(QMouseEvent *event)
-{
-	QTableView::mousePressEvent(event);
-}
-
-void CTableView::mouseDoubleClickEvent(QMouseEvent *event)
-{
-	QTableView::mouseDoubleClickEvent(event);
-}
-
 void 
 CTableView::keyReleaseEvent(QKeyEvent* event)
 {

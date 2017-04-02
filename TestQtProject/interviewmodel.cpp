@@ -87,10 +87,6 @@ CDataTableModel::createInstance(const int rows, const int columns, QObject *pare
 	return model;
 }
 
-CDataTableModel::~CDataTableModel()
-{
-}
-
 void 
 CDataTableModel::initData(const int rows, const int columns)
 {
@@ -223,17 +219,20 @@ CDataTableModel::setData(const QModelIndex &index, const QVariant &value, int ro
 	return true;
 }
 
-bool CDataTableModel::setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles)
+bool 
+CDataTableModel::setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles)
 {
 	return QAbstractItemModel::setItemData(index, roles);
 }
 
-bool CDataTableModel::lastRowIsClean() const
+bool 
+CDataTableModel::lastRowIsClean() const
 {
 	return m_dataRows.last().isEmpty();
 }
 
-void CDataTableModel::appendCleanRow()
+void 
+CDataTableModel::appendCleanRow()
 {
 	QModelIndex root;
 	beginInsertRows(root, m_dataRows.size(), m_dataRows.size());
@@ -245,7 +244,8 @@ void CDataTableModel::appendCleanRow()
 	endInsertRows();
 }
 
-bool CDataTableModel::removeRows(int row, int count, const QModelIndex &parent /* = QModelIndex() */)
+bool 
+CDataTableModel::removeRows(int row, int count, const QModelIndex &parent /* = QModelIndex() */)
 {
 	QModelIndex root;
 	

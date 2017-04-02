@@ -1,4 +1,3 @@
-#include <windows.h>
 #include <iostream>
 
 #include <QApplication>
@@ -15,7 +14,8 @@
 #include <QTreeView>
 #include <QSizePolicy>
 
-int AppMain(int argc, char* argv[])
+int 
+AppMain(int argc, char* argv[])
 {
 	const int WINDOW_WIDTH = 800;
 	const int WINDOW_HEIGHT = 600;
@@ -53,7 +53,8 @@ int AppMain(int argc, char* argv[])
 }
 
 #ifdef _DEBUG
-int main(int argc, char *argv[])
+int 
+main(int argc, char *argv[])
 {
 	int result = 0;
 	std::cout << "==== DEBUG CONSOLE STARTED ====" << std::endl;
@@ -68,7 +69,10 @@ int main(int argc, char *argv[])
 }
 
 #else // defined NDEBUG
-int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPreInst, LPSTR lpCmdLine, int nCmdShow)
+#include <windows.h>
+
+int
+WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPreInst, LPSTR lpCmdLine, int nCmdShow)
 {
 	int result = 0;
 	
