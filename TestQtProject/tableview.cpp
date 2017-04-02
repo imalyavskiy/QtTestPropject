@@ -1,6 +1,7 @@
 #include "tableview.h"
 #include <QMouseEvent>
 #include <iostream>
+#include <set>
 
 void 
 CTableView::keyReleaseEvent(QKeyEvent* event)
@@ -11,20 +12,25 @@ CTableView::keyReleaseEvent(QKeyEvent* event)
 		const QItemSelection selection = selectionModel->selection();
 		const QModelIndexList selectedIndexes = selection.indexes();
 
-		QSet<int> selectedRows;
+		// —обираем выделенные строки
+		std::set<int> selectedRows;
 		for (QModelIndex selected : selectedIndexes)
 		{
-			if (true == selectionModel->isRowSelected(selected.row(), selected.parent()) && selectedRows.end() == selectedRows.find(selected.row()))
+			if (true == selectionModel->isRowSelected(selected.row(), selected.parent()) 
+				&& selectedRows.end() == std::find(selectedRows.begin(), selectedRows.end(), selected.row()))
 				selectedRows.insert(selected.row());
 		}
 
-		if(selectedRows.isEmpty())
+		if(selectedRows.empty()) // ≈сли нет выделенных строк - очищаем содержимое выеленных €чеек
 			for (QModelIndex selected : selectedIndexes)
 				model()->setData(selected, QString(), Qt::DisplayRole);
-		else
-			for (QSet<int>::reverse_iterator _it = selectedRows.rbegin(); _it != selectedRows.rend(); ++_it)
+		else					 // в противном случае - удал€ем строки, но не очищаем €чейки 
+								 // в неполностью выделенных строках
+			for (std::set<int>::reverse_iterator _it = selectedRows.rbegin(); _it != selectedRows.rend(); ++_it)
 				model()->removeRows(*_it, 1);
 
+		// ћагические пассы - при очищении €чеек надо перевыделить выделенное
+		// что бы отобразилось отсутствие данных
 		selectionModel->select(selection, QItemSelectionModel::Deselect);
 		selectionModel->select(selection, QItemSelectionModel::Select);
 	}

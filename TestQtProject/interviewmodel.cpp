@@ -71,8 +71,9 @@ CDataTableRow::isEmpty() const
 //////////////////////////////////////////////////////////////////////////
 // CInterviewModel
 //////////////////////////////////////////////////////////////////////////
-CDataTableModel::CDataTableModel(QObject *parent)
+CDataTableModel::CDataTableModel(const int columns, QObject *parent)
     : QAbstractItemModel(parent)
+	, COLUMNS(columns)
 {
 	;
 }
@@ -80,7 +81,7 @@ CDataTableModel::CDataTableModel(QObject *parent)
 CDataTableModel* 
 CDataTableModel::createInstance(const int rows, const int columns, QObject *parent)
 {
-	CDataTableModel* model = new CDataTableModel(parent);
+	CDataTableModel* model = new CDataTableModel(columns, parent);
 	if (model)
 		model->initData(rows, columns);
 
@@ -102,8 +103,7 @@ CDataTableModel::initData(const int rows, const int columns)
 		m_dataRows.append(CDataTableRow(strings, flags));
 	}
 
-	if (!lastRowIsClean())
-		appendCleanRow();
+	checkFooter();
 }
 
 QModelIndex 
@@ -213,9 +213,8 @@ CDataTableModel::setData(const QModelIndex &index, const QVariant &value, int ro
 	
 	item->m_strings[index.column()] = value.toString();
 
-	if (!lastRowIsClean())
-		appendCleanRow();
-	
+	checkFooter();
+
 	return true;
 }
 
@@ -225,36 +224,90 @@ CDataTableModel::setItemData(const QModelIndex &index, const QMap<int, QVariant>
 	return QAbstractItemModel::setItemData(index, roles);
 }
 
-bool 
-CDataTableModel::lastRowIsClean() const
+void CDataTableModel::checkFooter()
 {
-	return m_dataRows.last().isEmpty();
-}
+	auto funcInsertBlank = [this](const int pos) 
+	{
+		Q_ASSERT(pos <= m_dataRows.size());
 
-void 
-CDataTableModel::appendCleanRow()
-{
-	QModelIndex root;
-	beginInsertRows(root, m_dataRows.size(), m_dataRows.size());
-		m_dataRows.append(
-			CDataTableRow( QVector<QString>(m_dataRows[0].m_strings.size(), QString())
-						 , QVector<Qt::ItemFlags>(m_dataRows[0].m_strings.size()
-						 , Qt::ItemIsEditable))
-		);
-	endInsertRows();
+		beginInsertRows(QModelIndex(), pos, pos);
+
+			const QVector<QString> columnData(COLUMNS, QString());
+			const QVector<Qt::ItemFlags> columnRoles(COLUMNS, Qt::ItemIsEditable);
+
+			m_dataRows.insert(pos, CDataTableRow(columnData, columnRoles));
+
+		endInsertRows();
+	};
+
+	auto funcInsertSpecial = [this](const int pos) {
+		Q_ASSERT(pos == m_dataRows.size());
+
+		beginInsertRows(QModelIndex(), pos, pos);
+
+			QVector<QString> columnData;
+			QVector<Qt::ItemFlags> columnRoles;
+			for (int cColumn = 0; cColumn < COLUMNS; ++cColumn)
+			{
+				columnData.append((0 == cColumn) ? QString("DEFAULT") : QString("NOTHING"));
+				columnRoles.append(Qt::ItemNeverHasChildren | ((0 == cColumn) ? Qt::NoItemFlags : Qt::ItemIsEditable));
+			}
+
+			m_dataRows.insert(pos, CDataTableRow(columnData, columnRoles));
+
+		endInsertRows();
+	};
+
+	
+	if (0 >= m_dataRows.size())
+	{							// если нет содержимого - добавим одну единствуенню строку - пустую
+		funcInsertBlank(0);
+	}
+	else if (1 == m_dataRows.size() && !isRowBlank(0))
+	{							// если закончилось редактирование одной есдинственной строки
+		funcInsertBlank(1);		//	- добавим пустую строку
+		funcInsertSpecial(2);	//	- следом за ней дефолтную
+	}
+	else if(!isRowBlank(m_dataRows.size() - 2))
+								// закончилось редактивание строки - добавим на месте дефолтной пустую, 
+								// дефолтная сдвинется
+		funcInsertBlank(m_dataRows.size() - 1);
 }
 
 bool 
 CDataTableModel::removeRows(int row, int count, const QModelIndex &parent /* = QModelIndex() */)
 {
-	QModelIndex root;
-	
-	if (row >= m_dataRows.size() || row == m_dataRows.size() - 1)
+	if (0 > row || row >= m_dataRows.size())
+		return false;
+
+	// Нельзя удалить единственную пустую строку
+	if (1 == m_dataRows.size() && isRowBlank(0))
+		return false;
+
+	// Нельзя удалить предпосленюю(пустую) и последнюю дефолтную строки
+	if (1 < m_dataRows.size() && (row >= m_dataRows.size() - 2))
 		return false;
 	
-	beginRemoveRows(root, row, row);
+	beginRemoveRows(QModelIndex(), row, row);
 		m_dataRows.removeAt(row);
 	endRemoveRows();
 
+	// Удалено всё. Пустая строка встала в начало, дефолтная за ней
+	if (2 == m_dataRows.size() && isRowBlank(0))
+	{
+		// Убираем дефолтную
+		beginRemoveRows(QModelIndex(), 1, 1);
+			m_dataRows.removeAt(1);
+		endRemoveRows();
+	}
+
+	Q_ASSERT(m_dataRows.size() == 1 || m_dataRows.size() >= 3);
+	// Строк должно быть либо одна, либо 3 и более
+
 	return true;
 }
+bool
+CDataTableModel::isRowBlank(const int pos)
+{
+	return (pos < m_dataRows.size()) ? m_dataRows.at(pos).isEmpty() : true;
+};

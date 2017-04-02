@@ -60,7 +60,7 @@ class CDataTableModel : public QAbstractItemModel
 {
     Q_OBJECT
 protected:
-	CDataTableModel(QObject *parent = 0);
+	CDataTableModel(const int columns, QObject *parent = 0);
 
 public:
 	static CDataTableModel* createInstance(const int rows, const int columns, QObject *parent);
@@ -82,9 +82,6 @@ public:
 	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
 	bool setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles) Q_DECL_OVERRIDE;
 
-	bool lastRowIsClean() const;
-	void appendCleanRow();
-
 	bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
 
 private:
@@ -93,6 +90,11 @@ private:
 
     QList<CDataTableRow>	m_dataRows;
     QFileIconProvider		m_iconProvider;
+
+	const int COLUMNS;
+
+	void checkFooter();
+	bool isRowBlank(const int pos);
 };
 
 #endif // MODEL_H
