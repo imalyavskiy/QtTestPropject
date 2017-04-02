@@ -40,3 +40,8 @@ void CEditBoxDelegate::updateEditorGeometry(QWidget* editor, const QStyleOptionV
 
 	editor->setGeometry(option.rect);
 }
+
+bool CEditBoxDelegate::eventFilter(QObject *object, QEvent *event)
+{
+	return QStyledItemDelegate::eventFilter(object, event);
+}

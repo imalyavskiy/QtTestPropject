@@ -35,82 +35,91 @@
 
 #include <QIcon>
 #include <QPixmap>
+#include <QEvent>
 
 
 //////////////////////////////////////////////////////////////////////////
 // CInterviewItem
 //////////////////////////////////////////////////////////////////////////
-CInterviewRow::CInterviewRow(const int items, CInterviewRow *parent)
+CDataTableRow::CDataTableRow(const QVector<QString>& strings, const QVector<Qt::ItemFlags>& flags, CDataTableRow *parent)
 	: parent(parent)
-	, m_data(items, QString())
-	, m_flags(items, Qt::ItemFlag::NoItemFlags)
+	, m_strings(strings)
+	, m_flags(flags)
 {
-	;
+	Q_ASSERT(strings.size() == flags.size());
 }
 
-CInterviewRow::~CInterviewRow()
+CDataTableRow::~CDataTableRow()
 {
 }
 
 bool 
-CInterviewRow::operator ==(const CInterviewRow& other) const
+CDataTableRow::operator ==(const CDataTableRow& other) const
 {
 	return (this == &other);
+}
+
+bool 
+CDataTableRow::isEmpty() const
+{
+	for (int cItem = 0; cItem < m_strings.size(); ++cItem)
+		if (!m_strings.at(cItem).isEmpty())
+			return false;
+	return true;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // CInterviewModel
 //////////////////////////////////////////////////////////////////////////
-CInterviewModel::CInterviewModel(const int rows, const int columns, QObject *parent)
+CDataTableModel::CDataTableModel(QObject *parent)
     : QAbstractItemModel(parent)
-	, m_numberOfRows(rows)
-	, m_numberOfColumns(columns)
-	, m_tree(rows, CInterviewRow(columns))
 {
 	;
 }
 
-CInterviewModel* 
-CInterviewModel::createInstance(const int rows, const int columns, QObject *parent)
+CDataTableModel* 
+CDataTableModel::createInstance(const int rows, const int columns, QObject *parent)
 {
-	CInterviewModel* model = new CInterviewModel(rows, columns, parent);
+	CDataTableModel* model = new CDataTableModel(parent);
 	if (model)
-		model->setData();
+		model->initData(rows, columns);
 
 	return model;
 }
 
-CInterviewModel::~CInterviewModel()
+CDataTableModel::~CDataTableModel()
 {
 }
 
 void 
-CInterviewModel::setData()
+CDataTableModel::initData(const int rows, const int columns)
 {
-	for (int cRow = 0; cRow < m_numberOfRows; ++cRow)
+	for (int cRow = 0; cRow < rows; ++cRow)
 	{
-		for (int cCol = 0; cCol < m_numberOfColumns; ++cCol)
+		QVector<QString> strings;
+		QVector<Qt::ItemFlags> flags;
+		for (int cCol = 0; cCol < columns; ++cCol)
 		{
-			QString& str = m_tree[cRow].m_data[cCol];
-			str.clear();
-			str = QString::number(cRow) + QString(":") + QString::number(cCol);
-
-			Qt::ItemFlags& flags = m_tree[cRow].m_flags[cCol];
-			flags = Qt::ItemIsEditable;
+			strings.append(QString::number(cRow) + QString(":") + QString::number(cCol));
+			flags.append(Qt::ItemIsEditable);
 		}
+		m_dataRows.append(CDataTableRow(strings, flags));
 	}
+
+	if (!lastRowIsClean())
+		appendCleanRow();
 }
 
 QModelIndex 
-CInterviewModel::index(int row, int column, const QModelIndex &parent) const
+CDataTableModel::index(int row, int column, const QModelIndex &parent) const
 {
 	if (parent.isValid())
 		return QModelIndex();
 
-    if (row < m_numberOfRows && row >= 0 && column < m_numberOfColumns && column >= 0) 
+    if (row < m_dataRows.size() && row >= 0 && column < m_dataRows.at(row).m_strings.size() && column >= 0)
 	{
-        CInterviewRow* parentItem = static_cast<CInterviewRow*>(parent.internalPointer());
-        CInterviewRow* item = (row < m_tree.size()) ? const_cast<CInterviewRow*>(&m_tree[row]) : nullptr;
+		CDataTableRow* parentItem = static_cast<CDataTableRow*>(parent.internalPointer());
+		CDataTableRow* item = (row < m_dataRows.size()) ? const_cast<CDataTableRow*>(&m_dataRows[row]) : nullptr;
 
         if (item)
             return createIndex(row, column, item);
@@ -119,11 +128,11 @@ CInterviewModel::index(int row, int column, const QModelIndex &parent) const
 }
 
 QModelIndex 
-CInterviewModel::parent(const QModelIndex &child) const
+CDataTableModel::parent(const QModelIndex &child) const
 {
     if (child.isValid()) {
-        CInterviewRow *item = static_cast<CInterviewRow*>(child.internalPointer());
-        CInterviewRow *parentItem = parent(item);
+        CDataTableRow *item = static_cast<CDataTableRow*>(child.internalPointer());
+        CDataTableRow *parentItem = parent(item);
         if (parentItem)
             return createIndex(row(parentItem), 0, parentItem);
     }
@@ -131,32 +140,32 @@ CInterviewModel::parent(const QModelIndex &child) const
 }
 
 int 
-CInterviewModel::rowCount(const QModelIndex &parent) const
+CDataTableModel::rowCount(const QModelIndex &parent) const
 {
-    return (parent.isValid() && parent.column() != 0) ? 0 : m_numberOfRows;
+    return (parent.isValid() && parent.column() != 0) ? 0 : m_dataRows.size();
 }
 
 int 
-CInterviewModel::columnCount(const QModelIndex &parent) const
+CDataTableModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return m_numberOfColumns;
+	return m_dataRows.isEmpty() ? 0 : m_dataRows.at(0).m_strings.size();
 }
 
 QVariant 
-CInterviewModel::data(const QModelIndex &index, int role) const
+CDataTableModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() >= m_numberOfRows || index.column() >= m_numberOfColumns)
+    if (!index.isValid() || index.row() >= m_dataRows.size() || index.column() >= m_dataRows.at(0).m_strings.size())
         return QVariant();
 
 	if (role == Qt::DisplayRole)
-		return QVariant(m_tree[index.row()].m_data[index.column()]);
+		return QVariant(m_dataRows[index.row()].m_strings[index.column()]);
 
     return QVariant();
 }
 
 QVariant 
-CInterviewModel::headerData(int section, Qt::Orientation orientation, int role) const
+CDataTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (role == Qt::DisplayRole)
         return QString::number(section);
@@ -164,48 +173,88 @@ CInterviewModel::headerData(int section, Qt::Orientation orientation, int role) 
 }
 
 bool 
-CInterviewModel::hasChildren(const QModelIndex &parent) const
+CDataTableModel::hasChildren(const QModelIndex &parent) const
 {
     if (parent.isValid() && parent.column() != 0)
         return false;
-    return m_numberOfRows > 0 && m_numberOfColumns > 0;
+    return !m_dataRows.isEmpty();
 }
 
 Qt::ItemFlags 
-CInterviewModel::flags(const QModelIndex &index) const
+CDataTableModel::flags(const QModelIndex &index) const
 {
 	if (!index.isValid())
 		return 0;
 
-	CInterviewRow* item = static_cast<CInterviewRow*>(index.internalPointer());
+	CDataTableRow* item = static_cast<CDataTableRow*>(index.internalPointer());
 
 	return item->m_flags.at(index.column()) | QAbstractItemModel::flags(index);
 }
 
-CInterviewRow *
-CInterviewModel::parent(CInterviewRow *child) const
+CDataTableRow *
+CDataTableModel::parent(CDataTableRow *child) const
 {
     return child ? child->parent : 0;
 }
 
 int 
-CInterviewModel::row(const CInterviewRow *node) const
+CDataTableModel::row(const CDataTableRow *node) const
 {
 	if (!node)
 		return -1;
 
-	return m_tree.indexOf(*node); // медленно - линейный проход от начала
+	return m_dataRows.indexOf(*node); // медленно - линейный проход от начала
 }
 
 bool 
-CInterviewModel::setData(const QModelIndex &index, const QVariant &value, int role)
+CDataTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
 	if (!index.isValid() && role != Qt::DisplayRole)
 		return false;
 
-	CInterviewRow* item = static_cast<CInterviewRow*>(index.internalPointer());
+	CDataTableRow* item = static_cast<CDataTableRow*>(index.internalPointer());
 	Q_ASSERT(item);
 	
-	item->m_data[index.column()] = value.toString();
+	item->m_strings[index.column()] = value.toString();
+
+	if (!lastRowIsClean())
+		appendCleanRow();
+	
+	return true;
+}
+
+bool CDataTableModel::setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles)
+{
+	return QAbstractItemModel::setItemData(index, roles);
+}
+
+bool CDataTableModel::lastRowIsClean() const
+{
+	return m_dataRows.last().isEmpty();
+}
+
+void CDataTableModel::appendCleanRow()
+{
+	QModelIndex root;
+	beginInsertRows(root, m_dataRows.size(), m_dataRows.size());
+		m_dataRows.append(
+			CDataTableRow( QVector<QString>(m_dataRows[0].m_strings.size(), QString())
+						 , QVector<Qt::ItemFlags>(m_dataRows[0].m_strings.size()
+						 , Qt::ItemIsEditable))
+		);
+	endInsertRows();
+}
+
+bool CDataTableModel::removeRows(int row, int count, const QModelIndex &parent /* = QModelIndex() */)
+{
+	QModelIndex root;
+	
+	if (row >= m_dataRows.size() || row == m_dataRows.size() - 1)
+		return false;
+	
+	beginRemoveRows(root, row, row);
+		m_dataRows.removeAt(row);
+	endRemoveRows();
+
 	return true;
 }

@@ -39,33 +39,34 @@
 #include <QIcon>
 #include <QVector>
 
-class CInterviewRow
+class CDataTableRow
 {
 public:
-	CInterviewRow(const int items = 0, CInterviewRow *parent = nullptr);
-	
-	~CInterviewRow();
+	CDataTableRow(const QVector<QString>& strings, const QVector<Qt::ItemFlags>& flags, CDataTableRow *parent = nullptr);
+	~CDataTableRow();
 
-	bool operator ==(const CInterviewRow& other) const;
+	bool operator ==(const CDataTableRow& other) const;
+
+	bool isEmpty() const;
 
 //protected:
-	CInterviewRow *parent;
-	QVector<QString> m_data;			// Данные элементов таблицы в текущей строке
+	CDataTableRow *parent;
+	QVector<QString> m_strings;			// Данные элементов таблицы в текущей строке
 	QVector<Qt::ItemFlags> m_flags;		// Флаги элементов таблицы в текущей строке
 };
 
 
-class CInterviewModel : public QAbstractItemModel
+class CDataTableModel : public QAbstractItemModel
 {
     Q_OBJECT
 protected:
-	CInterviewModel(const int rows, const int columns, QObject *parent = 0);
+	CDataTableModel(QObject *parent = 0);
 
 public:
-	static CInterviewModel* createInstance(const int rows, const int columns, QObject *parent);
-	~CInterviewModel();
+	static CDataTableModel* createInstance(const int rows, const int columns, QObject *parent);
+	~CDataTableModel();
 
-	void setData();
+	void initData(const int rows, const int columns);
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const Q_DECL_OVERRIDE;
     QModelIndex parent(const QModelIndex &child) const Q_DECL_OVERRIDE;
@@ -80,15 +81,19 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
 	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
+	bool setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles) Q_DECL_OVERRIDE;
+
+	bool lastRowIsClean() const;
+	void appendCleanRow();
+
+	bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
 
 private:
-    CInterviewRow *parent(CInterviewRow *child) const;
-    int row(const CInterviewRow *node) const;
+    CDataTableRow* parent(CDataTableRow *child) const;
+    int row(const CDataTableRow *node) const;
 
-    int m_numberOfRows;
-    int m_numberOfColumns;
-    QVector<CInterviewRow> m_tree;
-    QFileIconProvider iconProvider;
+    QList<CDataTableRow>	m_dataRows;
+    QFileIconProvider		m_iconProvider;
 };
 
 #endif // MODEL_H

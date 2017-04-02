@@ -16,6 +16,9 @@ public:
 	void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const Q_DECL_OVERRIDE;
 
 	void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
+
+protected:
+	bool eventFilter(QObject *object, QEvent *event) Q_DECL_OVERRIDE;
 };
 
 #endif

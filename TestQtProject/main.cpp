@@ -23,7 +23,7 @@ int AppMain(int argc, char* argv[])
 	QApplication app(argc, argv);
 	QMainWindow mainWindow;
 
- 	QAbstractItemModel *data_model = CInterviewModel::createInstance(2, 2, &mainWindow);
+ 	QAbstractItemModel *data_model = CDataTableModel::createInstance(2, 2, &mainWindow);
  	QItemSelectionModel *selection_model = new QItemSelectionModel(data_model);
  
  	CTableView *table = new CTableView;

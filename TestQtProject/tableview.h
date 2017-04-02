@@ -13,6 +13,9 @@ public:
 
 	void mousePressEvent(QMouseEvent *event);
 	void mouseDoubleClickEvent(QMouseEvent *event);
+
+protected:
+	void keyReleaseEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
 };
 
 #endif // __TABLE_VIEW_H__
