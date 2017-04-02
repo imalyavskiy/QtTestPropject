@@ -4,6 +4,8 @@
 #include <QApplication>
 
 #include "interviewmodel.h"
+#include "editboxdelegate.h"
+#include "tableview.h"
 
 #include <QApplication>
 #include <QHeaderView>
@@ -24,16 +26,20 @@ int AppMain(int argc, char* argv[])
  	QAbstractItemModel *data_model = CInterviewModel::createInstance(2, 2, &mainWindow);
  	QItemSelectionModel *selection_model = new QItemSelectionModel(data_model);
  
- 	QTableView *table = new QTableView;
+ 	CTableView *table = new CTableView;
  	table->setModel(data_model);
  	table->setSelectionModel(selection_model);
  	table->horizontalHeader()->setSectionsMovable(false);
 	table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
  	table->verticalHeader()->setSectionsMovable(false);
 	table->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
- 	// Set StaticContents to enable minimal repaints on resizes.
+ 	
+	// Set StaticContents to enable minimal repaints on resizes.
  	table->viewport()->setAttribute(Qt::WA_StaticContents);
-	
+
+	CEditBoxDelegate editBoxDelegate;
+	table->setItemDelegate(&editBoxDelegate);
+		
 	mainWindow.setCentralWidget(table);
 	mainWindow.setWindowIcon(QPixmap(":/images/interview.png"));
 	mainWindow.setWindowTitle("Interview");

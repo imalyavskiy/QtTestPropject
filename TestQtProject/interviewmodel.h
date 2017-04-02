@@ -50,7 +50,8 @@ public:
 
 //protected:
 	CInterviewRow *parent;
-	QVector<QString> m_itemsInTheRow;
+	QVector<QString> m_data;			// Данные элементов таблицы в текущей строке
+	QVector<Qt::ItemFlags> m_flags;		// Флаги элементов таблицы в текущей строке
 };
 
 
@@ -77,6 +78,8 @@ public:
 
     bool hasChildren(const QModelIndex &parent) const Q_DECL_OVERRIDE;
     Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
+
+	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
 
 private:
     CInterviewRow *parent(CInterviewRow *child) const;

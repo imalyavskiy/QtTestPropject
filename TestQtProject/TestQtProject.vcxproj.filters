@@ -36,12 +36,30 @@
     <ClCompile Include="GeneratedFiles\moc_interviewmodel.cpp">
       <Filter>Generated\moc</Filter>
     </ClCompile>
+    <ClCompile Include="editboxdelegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_editboxdelegate.cpp">
+      <Filter>Generated\moc</Filter>
+    </ClCompile>
+    <ClCompile Include="tableview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_tableview.cpp">
+      <Filter>Generated\moc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Resources\interview.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="interviewmodel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editboxdelegate.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="tableview.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

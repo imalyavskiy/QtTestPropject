@@ -42,7 +42,8 @@
 //////////////////////////////////////////////////////////////////////////
 CInterviewRow::CInterviewRow(const int items, CInterviewRow *parent)
 	: parent(parent)
-	, m_itemsInTheRow(items, QString())
+	, m_data(items, QString())
+	, m_flags(items, Qt::ItemFlag::NoItemFlags)
 {
 	;
 }
@@ -66,15 +67,7 @@ CInterviewModel::CInterviewModel(const int rows, const int columns, QObject *par
 	, m_numberOfColumns(columns)
 	, m_tree(rows, CInterviewRow(columns))
 {
-	for (int cRow = 0; cRow < rows; ++cRow)
-	{
-		for (int cCol = 0; cCol < columns; ++cCol)
-		{
-			QString& str = m_tree[cRow].m_itemsInTheRow[cCol];
-			str.clear();
-			str = QString::number(cRow) + QString(":") + QString::number(cCol);
-		}
-	}
+	;
 }
 
 CInterviewModel* 
@@ -98,9 +91,12 @@ CInterviewModel::setData()
 	{
 		for (int cCol = 0; cCol < m_numberOfColumns; ++cCol)
 		{
-			QString& str = m_tree[cRow].m_itemsInTheRow[cCol];
+			QString& str = m_tree[cRow].m_data[cCol];
 			str.clear();
 			str = QString::number(cRow) + QString(":") + QString::number(cCol);
+
+			Qt::ItemFlags& flags = m_tree[cRow].m_flags[cCol];
+			flags = Qt::ItemIsEditable;
 		}
 	}
 }
@@ -114,9 +110,7 @@ CInterviewModel::index(int row, int column, const QModelIndex &parent) const
     if (row < m_numberOfRows && row >= 0 && column < m_numberOfColumns && column >= 0) 
 	{
         CInterviewRow* parentItem = static_cast<CInterviewRow*>(parent.internalPointer());
-        CInterviewRow* item = (row < m_tree.size()) 
-			? const_cast<CInterviewRow*>(&m_tree[row]) // хак
-			: nullptr;
+        CInterviewRow* item = (row < m_tree.size()) ? const_cast<CInterviewRow*>(&m_tree[row]) : nullptr;
 
         if (item)
             return createIndex(row, column, item);
@@ -156,7 +150,7 @@ CInterviewModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
 	if (role == Qt::DisplayRole)
-		return QVariant(m_tree[index.row()].m_itemsInTheRow[index.column()]);
+		return QVariant(m_tree[index.row()].m_data[index.column()]);
 
     return QVariant();
 }
@@ -182,7 +176,10 @@ CInterviewModel::flags(const QModelIndex &index) const
 {
 	if (!index.isValid())
 		return 0;
-	return Qt::ItemIsDragEnabled|QAbstractItemModel::flags(index);
+
+	CInterviewRow* item = static_cast<CInterviewRow*>(index.internalPointer());
+
+	return item->m_flags.at(index.column()) | QAbstractItemModel::flags(index);
 }
 
 CInterviewRow *
@@ -197,5 +194,18 @@ CInterviewModel::row(const CInterviewRow *node) const
 	if (!node)
 		return -1;
 
-	return m_tree.indexOf(*node); // линейный проход от начала
+	return m_tree.indexOf(*node); // медленно - линейный проход от начала
+}
+
+bool 
+CInterviewModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+	if (!index.isValid() && role != Qt::DisplayRole)
+		return false;
+
+	CInterviewRow* item = static_cast<CInterviewRow*>(index.internalPointer());
+	Q_ASSERT(item);
+	
+	item->m_data[index.column()] = value.toString();
+	return true;
 }

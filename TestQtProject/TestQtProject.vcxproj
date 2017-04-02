@@ -11,10 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="editboxdelegate.cpp" />
+    <ClCompile Include="GeneratedFiles\moc_editboxdelegate.cpp" />
     <ClCompile Include="GeneratedFiles\moc_interviewmodel.cpp" />
+    <ClCompile Include="GeneratedFiles\moc_tableview.cpp" />
     <ClCompile Include="GeneratedFiles\qrc_interview.cpp" />
     <ClCompile Include="interviewmodel.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="tableview.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="interviewmodel.h">
@@ -39,6 +43,26 @@
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling: %(Filename)%(Extension) using RCC</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)GeneratedFiles\qrc_%(Filename).cpp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)GeneratedFiles\qrc_%(Filename).cpp</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="editboxdelegate.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR_VS2015_32_BIN)\moc.exe "%(Fullpath)" -o "$(ProjectDir)GeneratedFiles\moc_%(Filename).cpp"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR_VS2015_32_BIN)\moc.exe "%(Fullpath)" -o "$(ProjectDir)GeneratedFiles\moc_%(Filename).cpp"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling %(Filename)%(Extension) using MOC</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling %(Filename)%(Extension) using MOC</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)GeneratedFiles\moc_%(Filename).cpp</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="tableview.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR_VS2015_32_BIN)\moc.exe "%(Fullpath)" -o "$(ProjectDir)GeneratedFiles\moc_%(Filename).cpp"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR_VS2015_32_BIN)\moc.exe "%(Fullpath)" -o "$(ProjectDir)GeneratedFiles\moc_%(Filename).cpp"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling %(Filename)%(Extension) using MOC</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling %(Filename)%(Extension) using MOC</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)GeneratedFiles\moc_%(Filename).cpp</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)GeneratedFiles\moc_%(Filename).cpp</Outputs>
     </CustomBuild>
   </ItemGroup>
   <PropertyGroup Label="Globals">
