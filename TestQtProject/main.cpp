@@ -32,7 +32,7 @@ AppMain(int argc, char* argv[])
  	table->horizontalHeader()->setSectionsMovable(false);
 	table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
  	table->verticalHeader()->setSectionsMovable(false);
-	table->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+	table->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
  	
 	// Set StaticContents to enable minimal repaints on resizes.
  	table->viewport()->setAttribute(Qt::WA_StaticContents);

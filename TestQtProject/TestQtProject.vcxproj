@@ -22,7 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="interviewmodel.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR_VS2015_32_BIN)\moc.exe "%(Fullpath)" -o "$(ProjectDir)GeneratedFiles\moc_%(Filename).cpp"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe" "%(Fullpath)" -o "$(ProjectDir)GeneratedFiles\moc_%(Filename).cpp"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR_VS2015_32_BIN)\moc.exe "%(Fullpath)" -o "$(ProjectDir)GeneratedFiles\moc_%(Filename).cpp"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling %(Filename)%(Extension) using MOC</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling %(Filename)%(Extension) using MOC</Message>
@@ -37,7 +37,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </ExcludedFromBuild>
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR_VS2015_32_BIN)\rcc.exe "%(Fullpath)" -name interview -o "$(ProjectDir)GeneratedFiles\qrc_%(Filename).cpp"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\rcc.exe "%(Fullpath)" -name interview -o "$(ProjectDir)GeneratedFiles\qrc_%(Filename).cpp"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR_VS2015_32_BIN)\rcc.exe "%(Fullpath)" -name interview -o "$(ProjectDir)GeneratedFiles\qrc_%(Filename).cpp"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling: %(Filename)%(Extension) using RCC</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling: %(Filename)%(Extension) using RCC</Message>
@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="editboxdelegate.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR_VS2015_32_BIN)\moc.exe "%(Fullpath)" -o "$(ProjectDir)GeneratedFiles\moc_%(Filename).cpp"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe" "%(Fullpath)" -o "$(ProjectDir)GeneratedFiles\moc_%(Filename).cpp"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR_VS2015_32_BIN)\moc.exe "%(Fullpath)" -o "$(ProjectDir)GeneratedFiles\moc_%(Filename).cpp"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling %(Filename)%(Extension) using MOC</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling %(Filename)%(Extension) using MOC</Message>
@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="tableview.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR_VS2015_32_BIN)\moc.exe "%(Fullpath)" -o "$(ProjectDir)GeneratedFiles\moc_%(Filename).cpp"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe" "%(Fullpath)" -o "$(ProjectDir)GeneratedFiles\moc_%(Filename).cpp"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR_VS2015_32_BIN)\moc.exe "%(Fullpath)" -o "$(ProjectDir)GeneratedFiles\moc_%(Filename).cpp"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling %(Filename)%(Extension) using MOC</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling %(Filename)%(Extension) using MOC</Message>
@@ -99,8 +99,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(QTDIR_VS2015_32)lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
-    <IncludePath>$(ProjectDir)GeneratedFiles;$(ProjectDir)GeneratedFiles\$(Configuration);$(QTDIR_VS2015_32)include;$(QTDIR_VS2015_32)include\QtCore;$(QTDIR_VS2015_32)include\QtGui;$(QTDIR_VS2015_32)include\QtWidgets;$(IncludePath)</IncludePath>
+    <LibraryPath>$(QTDIR)\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
+    <IncludePath>$(ProjectDir)GeneratedFiles;$(ProjectDir)GeneratedFiles\$(Configuration);$(QTDIR)\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)bin\$(Configuration)_$(PlatformShortName)\</OutDir>
     <IntDir>$(SolutionDir)int\$(Configuration)_$(PlatformShortName)\$(ProjectName)\</IntDir>
   </PropertyGroup>
