@@ -1,5 +1,5 @@
 #include "tableview.h"
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 #include <iostream>
 #include <set>
 

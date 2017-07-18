@@ -1,7 +1,7 @@
 #include "editboxdelegate.h"
 
-#include <QLineEdit>
-#include <QTextEdit>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QTextEdit>
 
 CEditBoxDelegate::CEditBoxDelegate(QObject *parent)
 	: QStyledItemDelegate(parent)

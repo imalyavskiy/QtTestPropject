@@ -14,47 +14,47 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Generated">
-      <UniqueIdentifier>{afa32c92-effc-496d-a56f-09d52c6ab9cf}</UniqueIdentifier>
+      <UniqueIdentifier>{e229dbc0-7be9-4ef9-b00b-3b8806c344fe}</UniqueIdentifier>
     </Filter>
     <Filter Include="Generated\moc">
-      <UniqueIdentifier>{716edfd0-6803-4ffc-9fee-e16bb0db36c1}</UniqueIdentifier>
+      <UniqueIdentifier>{0ebc8b3f-95d1-4168-a72c-2ee8306ceb40}</UniqueIdentifier>
     </Filter>
     <Filter Include="Generated\qrc">
-      <UniqueIdentifier>{9fd8c8c9-be7b-44b0-9db7-baf840b69bac}</UniqueIdentifier>
+      <UniqueIdentifier>{39f51a9f-b8e7-4057-853b-d8a511c2cc0a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="editboxdelegate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="interviewmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_interview.cpp">
-      <Filter>Generated\qrc</Filter>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_interviewmodel.cpp">
-      <Filter>Generated\moc</Filter>
-    </ClCompile>
-    <ClCompile Include="editboxdelegate.cpp">
+    <ClCompile Include="tableview.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_editboxdelegate.cpp">
       <Filter>Generated\moc</Filter>
     </ClCompile>
-    <ClCompile Include="tableview.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\moc_interviewmodel.cpp">
+      <Filter>Generated\moc</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_tableview.cpp">
       <Filter>Generated\moc</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_interview.cpp">
+      <Filter>Generated\moc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Resources\interview.qrc">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="interviewmodel.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Resources\interview.qrc">
+      <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="editboxdelegate.h">
       <Filter>Header Files</Filter>

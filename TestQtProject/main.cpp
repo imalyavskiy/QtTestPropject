@@ -1,18 +1,18 @@
 #include <iostream>
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 #include "interviewmodel.h"
 #include "editboxdelegate.h"
 #include "tableview.h"
 
-#include <QApplication>
-#include <QHeaderView>
-#include <QListView>
-#include <QMainWindow>
-#include <QTableView>
-#include <QTreeView>
-#include <QSizePolicy>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QListView>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QTableView>
+#include <QtWidgets/QTreeView>
+#include <QtWidgets/QSizePolicy>
 
 int 
 AppMain(int argc, char* argv[])
