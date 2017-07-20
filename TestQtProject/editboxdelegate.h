@@ -1,7 +1,7 @@
 #ifndef DELEGATE_H
 #define DELEGATE_H
 
-#include <QStyledItemDelegate>
+#include <QtWidgets\QStyledItemDelegate>
 
 class CEditBoxDelegate : public QStyledItemDelegate
 {

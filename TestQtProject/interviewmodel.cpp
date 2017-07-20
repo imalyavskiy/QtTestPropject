@@ -33,9 +33,9 @@
 
 #include "interviewmodel.h"
 
-#include <QIcon>
-#include <QPixmap>
-#include <QEvent>
+#include <QtGui\QIcon>
+#include <QtGui\QPixmap>
+#include <QtCore\QEvent>
 
 
 //////////////////////////////////////////////////////////////////////////

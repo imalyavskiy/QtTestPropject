@@ -34,10 +34,10 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <QAbstractItemModel>
-#include <QFileIconProvider>
-#include <QIcon>
-#include <QVector>
+#include <QtCore\QAbstractItemModel>
+#include <QtWidgets\QFileIconProvider>
+#include <QtGui\QIcon>
+#include <QtCore\QVector>
 
 class CDataTableRow
 {
